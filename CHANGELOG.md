@@ -4,6 +4,13 @@
 
 ## [Unreleased]
 
+## [0.0.2] - 2026-05-25
+
+### Changed
+
+- 最低支持 IDE 版本下调至 2024.1（`sinceBuild=241`），编译目标平台改为 2024.1.7 / JDK 17；`untilBuild` 留空，对未来版本不设上限
+- 通过 IntelliJ Plugin Verifier 在 IC-241.19416.15 上的兼容性校验
+
 ## [0.0.1] - 2026-05-25
 
 ### Added
@@ -17,5 +24,6 @@
 - 大文件保护：默认对超过 1000 行的文件不着色，阈值可在设置页调整
 - 排除清单：可按文件类型或语言 ID 排除
 
-[Unreleased]: https://github.com/HuaGCS/rainbow-parentheses/compare/v0.0.1...HEAD
+[Unreleased]: https://github.com/HuaGCS/rainbow-parentheses/compare/v0.0.2...HEAD
+[0.0.2]: https://github.com/HuaGCS/rainbow-parentheses/compare/v0.0.1...v0.0.2
 [0.0.1]: https://github.com/HuaGCS/rainbow-parentheses/releases/tag/v0.0.1
