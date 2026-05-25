@@ -47,6 +47,66 @@ nesting level for IntelliJ Platform IDEs. Free and open source.
 </ul>
 <!-- Plugin description end -->
 
+## 安装
+
+从 GitHub Releases 下载 zip 安装：
+
+1. 到 [Releases 页面](https://github.com/HuaGCS/rainbow-parentheses/releases) 下载最新版的 `Rainbow Parentheses-X.Y.Z.zip`。
+2. 在 IDE 里打开 `Settings / Preferences → Plugins`。
+3. 点齿轮图标 ⚙ → `Install Plugin from Disk…`，选中刚下载的 zip。
+4. 提示重启 IDE 时确认重启。
+
+兼容 IntelliJ Platform 2025.1（since-build `251`）及之后所有版本（IntelliJ IDEA、PyCharm、WebStorm、GoLand、Android Studio 等基于该平台的 IDE 均可）。
+
+## 使用
+
+装好即生效，无需额外开启。打开任意代码文件即可看到：
+
+- **括号被按嵌套层级着色**：圆括号 `()`、方括号 `[]`、花括号 `{}` 默认开启；尖括号 `<>` 因纯文本匹配下对泛型/比较运算符易误判，默认关闭，按需在设置页打开。
+- **缩进引导线被替换为彩虹色**：原 IDE 的灰色竖线被按缩进深度着色后的彩虹线替代；位置和长度与原生 100% 一致；整体淡显，**光标所在块**对应的引导线自动加亮。
+- **作用域高亮**：把光标放进任意括号内，按 `Ctrl + 鼠标右键`，从开括号到闭括号的整个范围会被加一层底色（颜色与该括号层级颜色相同，淡化叠加在编辑器背景上）。再次在别处触发即切换；光标不在任何括号内时清除高亮。
+
+### 快捷键
+
+| 操作 | 默认快捷键 |
+|---|---|
+| 整体启用 / 禁用插件 | `Ctrl + Shift + R` |
+| 高亮光标所在括号作用域 | `Ctrl + 鼠标右键` |
+
+两者均可在 `Settings → Keymap` 中搜索 "Rainbow Parentheses" / "Highlight Current Scope" 重新绑定。
+
+## 配置
+
+### 主设置页：`Settings → Tools → Rainbow Parentheses`
+
+| 区块 | 选项 | 说明 |
+|---|---|---|
+| 主开关 | 启用 Rainbow Parentheses | 一键开关全部功能 |
+| 括号类型 | 圆括号 / 方括号 / 花括号 / 尖括号 | 分别控制四类括号是否着色 |
+| 缩进线与作用域 | 显示彩虹缩进线 | 关闭后恢复 IDE 原生灰色缩进线 |
+| | 启用作用域高亮 | 关闭后 Ctrl+右键不再触发 |
+| 颜色 | 颜色层数（1–10）| 颜色循环周期；设小可让颜色在浅层更早重复 |
+| 性能 | 不对大文件着色 | 行数超阈值的文件不参与高亮 |
+| | 行数阈值（100–100000）| 默认 1000 |
+| 排除 | 排除的文件类型（逗号分隔）| 例：`json,xml`（小写文件类型名）|
+| | 排除的语言（逗号分隔，语言 ID）| 例：`python,markdown`（小写 language id）|
+
+修改任何选项 → `Apply`/`OK` 后立即生效，无需重启 IDE。
+
+### 颜色定制：`Settings → Editor → Color Scheme → Rainbow Parentheses`
+
+逐项调整颜色：
+- **Round Brackets / Square Brackets / Curly Brackets / Angle Brackets** 各 10 层（Level 1–10）= 40 个括号颜色
+- **Indent Guides** 10 层 = 10 个缩进线颜色
+
+颜色配置随当前 Color Scheme 保存（Default / Darcula / 自定义 scheme 各自独立）；切换主题不会丢失。
+
+## 卸载
+
+`Settings → Plugins → Installed → Rainbow Parentheses → ⚙ → Uninstall`，重启 IDE 生效。
+
+设置数据保存在 IDE 配置目录的 `options/rainbowParentheses.xml`，卸载后如想清理可一并删除。
+
 ## Attribution & independent development
 
 This project is developed independently. It does **not** copy source code or
