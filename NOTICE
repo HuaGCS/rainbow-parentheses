@@ -1,0 +1,35 @@
+Rainbow Parentheses
+Copyright (c) 2025-2026 Hua
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+================================================================================
+THIRD-PARTY CODE
+================================================================================
+
+This product contains geometry logic for rendering indent guides that is
+derived from JetBrains IntelliJ Community Edition:
+
+    Project : intellij-community
+    Source  : platform/lang-impl/src/com/intellij/codeInsight/daemon/impl/
+              IndentGuideRenderer.java
+    Repo    : https://github.com/JetBrains/intellij-community
+    License : Apache License, Version 2.0
+              https://www.apache.org/licenses/LICENSE-2.0
+
+The derived code lives in:
+    src/main/kotlin/com/hua/rainbow_parentheses/indents/RainbowIndentGuideRenderer.kt
+
+That file replicates the original's vertical-extent computation (skipping
+blank lines upward from the highlighter start, +lineHeight start offset,
+end-line top, and a folding-collapsed early return) and replaces only the
+coloring logic. No source code from any other plugin or project was copied;
+the rest of this project is independent work.
+
+================================================================================
+PLATFORM RUNTIME
+================================================================================
+
+This plugin runs on top of the IntelliJ Platform SDK (also Apache License,
+Version 2.0) provided by JetBrains s.r.o. The SDK is not bundled with this
+plugin; it is part of the host IDE at runtime.

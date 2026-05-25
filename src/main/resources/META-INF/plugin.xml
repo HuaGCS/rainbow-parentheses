@@ -1,0 +1,70 @@
+<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<idea-plugin>
+    <id>com.hua.rainbow-parentheses</id>
+    <name>Rainbow Parentheses</name>
+    <vendor email="huaengr@gmail.com" url="https://github.com/HuaGCS">Hua</vendor>
+
+    <description><![CDATA[
+        彩虹括号插件 - 为不同层级的括号显示不同颜色，提高代码可读性。
+        
+        功能特性：
+        • 支持圆括号 ()、方括号 []、花括号 {}、尖括号 <>
+        • 10种预设颜色，智能颜色分配
+        • 支持 Java, Kotlin, JavaScript, Python 等多种语言
+        • 智能字符串和注释过滤
+        • 性能优化，支持大文件
+        • 丰富的配置选项
+        • 快捷键 Ctrl+Shift+R 切换功能
+    ]]></description>
+
+    <change-notes><![CDATA[
+        v0.0.1 - 初始版本
+        • 基础彩虹括号功能
+        • 配置界面
+        • 快捷键切换
+    ]]></change-notes>
+
+    <depends>com.intellij.modules.lang</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- 设置服务 -->
+        <applicationService serviceImplementation="com.hua.rainbow_parentheses.RainbowParenthesesSettings"/>
+
+        <!-- 高亮扩展 -->
+        <highlightingPassFactory implementation="com.hua.rainbow_parentheses.RainbowBracketsPassFactory"/>
+        <highlightingPassFactory implementation="com.hua.rainbow_parentheses.indents.RainbowIndentsPassFactory"/>
+
+        <!-- 颜色设置页面 -->
+        <colorSettingsPage implementation="com.hua.rainbow_parentheses.settings.RainbowColorSettingsPage"/>
+
+        <!-- 配置页面（应用级，多项目时只显示一次） -->
+        <applicationConfigurable
+                parentId="tools"
+                instance="com.hua.rainbow_parentheses.settings.EnhancedRainbowParenthesesConfigurable"
+                id="com.hua.rainbow-parentheses.settings"
+                displayName="Rainbow Parentheses"/>
+
+        <!-- 彩虹括号颜色定义 -->
+        <additionalTextAttributes scheme="Default" file="colorSchemes/rainbow-color-default.xml"/>
+        <additionalTextAttributes scheme="Darcula" file="colorSchemes/rainbow-color-default-darcula.xml"/>
+
+        <!-- 启动活动 -->
+        <postStartupActivity implementation="com.hua.rainbow_parentheses.RainbowParenthesesStartupActivity"/>
+    </extensions>
+
+    <actions>
+        <action id="RainbowParentheses.Toggle"
+                class="com.hua.rainbow_parentheses.actions.ToggleRainbowParenthesesAction"
+                text="Toggle Rainbow Parentheses"
+                description="启用/禁用彩虹括号">
+            <add-to-group group-id="ViewMenu" anchor="last"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="ctrl shift R"/>
+        </action>
+        <action id="RainbowParentheses.ScopeHighlighting"
+                class="com.hua.rainbow_parentheses.actions.ScopeHighlightingAction"
+                text="Highlight Current Scope"
+                description="高亮光标所在的括号作用域">
+            <mouse-shortcut keymap="$default" keystroke="control button3"/>
+        </action>
+    </actions>
+</idea-plugin>

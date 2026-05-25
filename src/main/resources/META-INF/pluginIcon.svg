@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">
+  <!-- 三层嵌套括号，每层不同颜色，象征彩虹括号 -->
+  <!-- 外层圆括号 () 红 -->
+  <path d="M 11 8 Q 6 20 11 32" fill="none" stroke="#C94A4A" stroke-width="2.4" stroke-linecap="round"/>
+  <path d="M 29 8 Q 34 20 29 32" fill="none" stroke="#C94A4A" stroke-width="2.4" stroke-linecap="round"/>
+  <!-- 中层方括号 [] 绿 -->
+  <path d="M 17 12 L 14 12 L 14 28 L 17 28" fill="none" stroke="#4FA64F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M 23 12 L 26 12 L 26 28 L 23 28" fill="none" stroke="#4FA64F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- 内层花括号 {} 蓝 -->
+  <path d="M 20 16 Q 17 16 17 20 Q 17 20 18 20 Q 17 20 17 24 Q 17 24 20 24"
+        fill="none" stroke="#3F7FCC" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M 20 16 Q 23 16 23 20 Q 23 20 22 20 Q 23 20 23 24 Q 23 24 20 24"
+        fill="none" stroke="#3F7FCC" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
