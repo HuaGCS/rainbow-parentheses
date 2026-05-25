@@ -15,8 +15,9 @@ group = providers.gradleProperty("pluginGroup").get()
 version = providers.gradleProperty("pluginVersion").get()
 
 // Set the JVM language level used to build the project.
+// 2024.1 自带 JBR 17，使用 JDK 17 编译以兼容该版本。
 kotlin {
-    jvmToolchain(21)
+    jvmToolchain(17)
 }
 
 // Configure project's dependencies
@@ -88,6 +89,9 @@ intellijPlatform {
 
         ideaVersion {
             sinceBuild = providers.gradleProperty("pluginSinceBuild")
+            // 留空 untilBuild，允许在 2024.1 之后的所有 IDE 版本（2024.2 / 2024.3 / 2025.x ...）安装。
+            // 否则插件默认会按 platformVersion 把 untilBuild 锁定到 241.*。
+            untilBuild = provider { null }
         }
     }
 
@@ -108,7 +112,7 @@ intellijPlatform {
     pluginVerification {
         ides {
             // 离线环境下用本地已缓存的 IDE 版本；联网环境可改为 recommended() 自动取最新
-            create("IC", "2025.1.5") {}
+            create("IC", "2024.1.7") {}
         }
     }
 }
