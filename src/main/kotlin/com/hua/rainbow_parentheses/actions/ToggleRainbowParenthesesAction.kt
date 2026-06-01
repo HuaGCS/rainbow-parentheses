@@ -2,6 +2,7 @@ package com.hua.rainbow_parentheses.actions
 
 import com.hua.rainbow_parentheses.RainbowParenthesesSettings
 import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.ui.Messages
@@ -36,4 +37,6 @@ class ToggleRainbowParenthesesAction : AnAction() {
         val enabled = RainbowParenthesesSettings.Companion.getInstance().enabled
         e.presentation.text = if (enabled) "禁用 Rainbow Parentheses" else "启用 Rainbow Parentheses"
     }
+
+    override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 }
