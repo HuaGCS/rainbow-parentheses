@@ -38,6 +38,9 @@ class RainbowVariablesPassFactory :
         if (!settings.isEnabledForFileType(file.fileType)) return null
         if (!settings.isEnabledForLanguage(file.language)) return null
 
+        // 已由作用域感知的 PSI 实现接管的语言，词法版让位
+        if (PsiScopeRainbowLanguages.handles(file.language)) return null
+
         if (settings.doNotRainbowifyBigFiles &&
             editor.document.lineCount > settings.bigFilesLineThreshold
         ) {

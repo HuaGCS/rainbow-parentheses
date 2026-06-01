@@ -1,0 +1,7 @@
+<!-- 仅在 Java 插件存在时加载：作用域感知的 Java 变量彩虹着色。 -->
+<idea-plugin>
+    <extensions defaultExtensionNs="com.intellij">
+        <annotator language="JAVA"
+                   implementationClass="com.hua.rainbow_parentheses.java.JavaRainbowVariablesAnnotator"/>
+    </extensions>
+</idea-plugin>

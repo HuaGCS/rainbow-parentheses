@@ -58,9 +58,16 @@ object RainbowColorsManager {
     fun getVariableColorKeys(): List<TextAttributesKey> = variableColorKeys
 
     /**
-     * 颜色生成器：把标识符名字确定性地映射到一个变量颜色 key——同名同色。
+     * 颜色生成器（词法版）：把标识符名字确定性地映射到一个变量颜色 key——同名同色。
      * 用 [Math.floorMod] 保证负哈希也落在 `[0, colorCount)` 区间内。
      */
     fun getVariableColorKey(name: String): TextAttributesKey =
         variableColorKeys[Math.floorMod(name.hashCode(), colorCount())]
+
+    /**
+     * 颜色生成器（作用域版）：在名字哈希之外再混入 [scopeSeed]（通常取变量声明处的偏移），
+     * 使同一变量的所有引用恒为同色，而不同作用域中的同名变量得到不同颜色。
+     */
+    fun getVariableColorKey(name: String, scopeSeed: Int): TextAttributesKey =
+        variableColorKeys[Math.floorMod(name.hashCode() * 31 + scopeSeed, colorCount())]
 }
