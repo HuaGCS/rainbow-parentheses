@@ -1,7 +1,7 @@
 <!-- 仅在 Kotlin 插件存在时加载：作用域感知的 Kotlin 变量彩虹着色。 -->
 <idea-plugin>
     <extensions defaultExtensionNs="com.intellij">
-        <annotator language="kotlin"
-                   implementationClass="com.hua.rainbow_parentheses.kotlin.KotlinRainbowVariablesAnnotator"/>
+        <highlightingPassFactory
+                implementation="com.hua.rainbow_parentheses.kotlin.KotlinRainbowVariablesPassFactory"/>
     </extensions>
 </idea-plugin>
