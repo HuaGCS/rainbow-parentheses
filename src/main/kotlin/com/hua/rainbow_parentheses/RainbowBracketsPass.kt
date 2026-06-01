@@ -5,9 +5,10 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.markup.HighlighterLayer
 import com.intellij.openapi.editor.markup.HighlighterTargetArea
 import com.intellij.openapi.editor.markup.RangeHighlighter
+import com.intellij.openapi.fileTypes.SyntaxHighlighterFactory
 import com.intellij.openapi.progress.ProgressIndicator
-import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
+import com.intellij.psi.PsiFile
 
 /**
  * 彩虹括号高亮 pass：扫描文档括号对，按嵌套层级给每个括号着色。
@@ -19,9 +20,9 @@ import com.intellij.openapi.util.Key
  * @author Hua
  */
 class RainbowBracketsPass(
-    project: Project,
+    private val file: PsiFile,
     private val editor: Editor
-) : TextEditorHighlightingPass(project, editor.document, false) {
+) : TextEditorHighlightingPass(file.project, editor.document, false) {
 
     private data class BracketHighlight(
         val startOffset: Int,
@@ -45,7 +46,15 @@ class RainbowBracketsPass(
         }
 
         val document = editor.document
-        val pairs = ParenthesesMatcher.findMatchingBrackets(document, 0, document.textLength)
+        // 优先用语言的词法分析器精确识别括号；无对应分析器时回退到纯文本扫描。
+        val syntaxHighlighter = SyntaxHighlighterFactory.getSyntaxHighlighter(
+            file.language, file.project, file.virtualFile
+        )
+        val pairs = if (syntaxHighlighter != null) {
+            ParenthesesMatcher.findMatchingBrackets(document.immutableCharSequence, 0, syntaxHighlighter)
+        } else {
+            ParenthesesMatcher.findMatchingBrackets(document, 0, document.textLength)
+        }
 
         val result = ArrayList<BracketHighlight>(pairs.size * 2)
         for (pair in pairs) {

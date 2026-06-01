@@ -14,7 +14,9 @@ import com.intellij.openapi.editor.markup.HighlighterLayer
 import com.intellij.openapi.editor.markup.HighlighterTargetArea
 import com.intellij.openapi.editor.markup.RangeHighlighter
 import com.intellij.openapi.editor.markup.TextAttributes
+import com.intellij.openapi.fileTypes.SyntaxHighlighterFactory
 import com.intellij.openapi.util.Key
+import com.intellij.psi.PsiDocumentManager
 import com.intellij.util.concurrency.AppExecutorUtil
 import java.awt.Color
 import java.util.concurrent.Callable
@@ -38,6 +40,7 @@ class ScopeHighlightingAction : AnAction() {
 
     override fun actionPerformed(e: AnActionEvent) {
         val editor = e.getData(CommonDataKeys.EDITOR) ?: return
+        val project = e.project ?: editor.project
 
         // 立即清除上一次的作用域高亮（EDT 上 markup 操作）
         clearPreviousHighlight(editor)
@@ -51,7 +54,16 @@ class ScopeHighlightingAction : AnAction() {
 
         // 后台扫描全文档括号、定位最内层括号对
         ReadAction.nonBlocking(Callable<ParenthesesMatcher.ParenthesesPair?> {
-            val allPairs = ParenthesesMatcher.findMatchingBrackets(document, 0, textLength)
+            val syntaxHighlighter = project?.let {
+                PsiDocumentManager.getInstance(it).getPsiFile(document)?.let { psiFile ->
+                    SyntaxHighlighterFactory.getSyntaxHighlighter(psiFile.language, it, psiFile.virtualFile)
+                }
+            }
+            val allPairs = if (syntaxHighlighter != null) {
+                ParenthesesMatcher.findMatchingBrackets(document.immutableCharSequence, 0, syntaxHighlighter)
+            } else {
+                ParenthesesMatcher.findMatchingBrackets(document, 0, textLength)
+            }
             allPairs
                 .filter { pair ->
                     pair.openRange.startOffset <= caret && caret <= pair.closeRange.endOffset

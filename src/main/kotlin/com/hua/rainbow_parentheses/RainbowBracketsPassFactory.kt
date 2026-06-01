@@ -41,6 +41,6 @@ class RainbowBracketsPassFactory :
             return null
         }
 
-        return RainbowBracketsPass(file.project, editor)
+        return RainbowBracketsPass(file, editor)
     }
 }
