@@ -30,6 +30,7 @@ class RainbowParenthesesSettings : PersistentStateComponent<RainbowParenthesesSe
     var bigFilesLineThreshold: Int = 1000
     var enableScopeHighlighting: Boolean = true
     var showIndentGuides: Boolean = true
+    var enableRainbowVariables: Boolean = false
 
     companion object {
         fun getInstance(): RainbowParenthesesSettings =

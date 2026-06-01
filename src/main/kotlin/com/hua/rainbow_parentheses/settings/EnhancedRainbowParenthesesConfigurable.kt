@@ -41,6 +41,7 @@ class EnhancedRainbowParenthesesConfigurable : Configurable {
 
     private lateinit var enableScopeHighlightingCheckBox: JBCheckBox
     private lateinit var showIndentGuidesCheckBox: JBCheckBox
+    private lateinit var enableRainbowVariablesCheckBox: JBCheckBox
 
     private lateinit var excludedFileTypesField: JBTextField
     private lateinit var excludedLanguagesField: JBTextField
@@ -64,6 +65,7 @@ class EnhancedRainbowParenthesesConfigurable : Configurable {
             .addComponent(enabledCheckBox)
             .addVerticalGap(8)
             .addComponent(section("括号类型（按嵌套层级着色）", bracketsPanel()))
+            .addComponent(section("标识符", identifiersPanel()))
             .addComponent(section("缩进线与作用域", indentScopePanel()))
             .addComponent(section("颜色", colorsPanel()))
             .addComponent(section("性能", performancePanel()))
@@ -92,6 +94,8 @@ class EnhancedRainbowParenthesesConfigurable : Configurable {
 
         enableScopeHighlightingCheckBox = JBCheckBox("启用作用域高亮（Ctrl+鼠标右键 点击括号内）")
         showIndentGuidesCheckBox = JBCheckBox("显示彩虹缩进线（替换原生缩进线，光标所在块加亮）")
+        enableRainbowVariablesCheckBox =
+            JBCheckBox("按名字给标识符着色（同名同色；基于词法，类型/方法名也会着色，默认关闭）")
 
         excludedFileTypesField = JBTextField()
         excludedLanguagesField = JBTextField()
@@ -116,6 +120,11 @@ class EnhancedRainbowParenthesesConfigurable : Configurable {
             .addComponent(angleRow)
             .panel
     }
+
+    private fun identifiersPanel(): JComponent =
+        FormBuilder.createFormBuilder()
+            .addComponent(enableRainbowVariablesCheckBox)
+            .panel
 
     private fun indentScopePanel(): JComponent =
         FormBuilder.createFormBuilder()
@@ -154,6 +163,7 @@ class EnhancedRainbowParenthesesConfigurable : Configurable {
                 || (bigFilesLineThresholdSpinner.value as Int) != settings.bigFilesLineThreshold
                 || enableScopeHighlightingCheckBox.isSelected != settings.enableScopeHighlighting
                 || showIndentGuidesCheckBox.isSelected != settings.showIndentGuides
+                || enableRainbowVariablesCheckBox.isSelected != settings.enableRainbowVariables
                 || excludedFileTypesField.text != settings.excludedFileTypes.joinToString(",")
                 || excludedLanguagesField.text != settings.excludedLanguages.joinToString(",")
     }
@@ -171,6 +181,7 @@ class EnhancedRainbowParenthesesConfigurable : Configurable {
         settings.bigFilesLineThreshold = bigFilesLineThresholdSpinner.value as Int
         settings.enableScopeHighlighting = enableScopeHighlightingCheckBox.isSelected
         settings.showIndentGuides = showIndentGuidesCheckBox.isSelected
+        settings.enableRainbowVariables = enableRainbowVariablesCheckBox.isSelected
 
         settings.excludedFileTypes.clear()
         excludedFileTypesField.text.trim().split(",")
@@ -204,6 +215,7 @@ class EnhancedRainbowParenthesesConfigurable : Configurable {
         bigFilesLineThresholdSpinner.value = settings.bigFilesLineThreshold
         enableScopeHighlightingCheckBox.isSelected = settings.enableScopeHighlighting
         showIndentGuidesCheckBox.isSelected = settings.showIndentGuides
+        enableRainbowVariablesCheckBox.isSelected = settings.enableRainbowVariables
         excludedFileTypesField.text = settings.excludedFileTypes.joinToString(",")
         excludedLanguagesField.text = settings.excludedLanguages.joinToString(",")
     }

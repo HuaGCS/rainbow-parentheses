@@ -44,23 +44,34 @@ class RainbowColorSettingsPage : ColorSettingsPage {
 
 // ---------- Mixed Brackets ----------
 <r0>(</r0><s1>[</s1><c2>{</c2><a3><</a3><r4>(</r4>mixed<r4>)</r4><a3>></a3><c2>}</c2><s1>]</s1><r0>)</r0>
+
+// ---------- Variables (colored by name hash; same name -> same color) ----------
+<v0>alpha</v0> <v1>beta</v1> <v2>gamma</v2> <v3>delta</v3> <v4>epsilon</v4> <v5>zeta</v5> <v6>eta</v6> <v7>theta</v7> <v8>iota</v8> <v9>kappa</v9>
         """.trimIndent()
 
         private val DESCRIPTORS: Array<AttributesDescriptor> by lazy {
-            TAG_NAMES.flatMap { (tag, groupName) ->
+            val brackets = TAG_NAMES.flatMap { (tag, groupName) ->
                 val type = TAG_TO_TYPE[tag]!!
                 RainbowColorsManager.getColorKeys(type).mapIndexed { index, key ->
                     AttributesDescriptor("$groupName//Level ${index + 1}", key)
                 }
-            }.toTypedArray()
+            }
+            val variables = RainbowColorsManager.getVariableColorKeys().mapIndexed { index, key ->
+                AttributesDescriptor("Variables//Color ${index + 1}", key)
+            }
+            (brackets + variables).toTypedArray()
         }
 
         private val TAG_DESCRIPTOR_MAP: Map<String, TextAttributesKey> by lazy {
-            TAG_TO_TYPE.flatMap { (tag, type) ->
+            val brackets = TAG_TO_TYPE.flatMap { (tag, type) ->
                 RainbowColorsManager.getColorKeys(type).mapIndexed { index, key ->
                     "$tag$index" to key
                 }
-            }.toMap()
+            }
+            val variables = RainbowColorsManager.getVariableColorKeys().mapIndexed { index, key ->
+                "v$index" to key
+            }
+            (brackets + variables).toMap()
         }
     }
 

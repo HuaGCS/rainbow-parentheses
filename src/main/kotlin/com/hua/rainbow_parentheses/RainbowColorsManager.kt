@@ -19,6 +19,7 @@ object RainbowColorsManager {
     private const val CURLY_PREFIX  = "HUA_RAINBOW_CURLY_"
     private const val ANGLE_PREFIX  = "HUA_RAINBOW_ANGLE_"
     private const val INDENT_PREFIX = "HUA_RAINBOW_INDENT_"
+    private const val VAR_PREFIX    = "HUA_RAINBOW_VAR_"
 
     private val prefixMap = mapOf(
         ParenthesesType.ROUND  to ROUND_PREFIX,
@@ -36,6 +37,9 @@ object RainbowColorsManager {
     private val indentColorKeys: List<TextAttributesKey> =
         (0..9).map { i -> TextAttributesKey.createTextAttributesKey("$INDENT_PREFIX$i") }
 
+    private val variableColorKeys: List<TextAttributesKey> =
+        (0..9).map { i -> TextAttributesKey.createTextAttributesKey("$VAR_PREFIX$i") }
+
     fun initialize() {
         // 初始化逻辑
     }
@@ -50,4 +54,13 @@ object RainbowColorsManager {
 
     fun getIndentColorKey(level: Int): TextAttributesKey =
         indentColorKeys[level % colorCount()]
+
+    fun getVariableColorKeys(): List<TextAttributesKey> = variableColorKeys
+
+    /**
+     * 颜色生成器：把标识符名字确定性地映射到一个变量颜色 key——同名同色。
+     * 用 [Math.floorMod] 保证负哈希也落在 `[0, colorCount)` 区间内。
+     */
+    fun getVariableColorKey(name: String): TextAttributesKey =
+        variableColorKeys[Math.floorMod(name.hashCode(), colorCount())]
 }

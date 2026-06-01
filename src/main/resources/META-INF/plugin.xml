@@ -32,6 +32,7 @@
 
         <!-- 高亮扩展 -->
         <highlightingPassFactory implementation="com.hua.rainbow_parentheses.RainbowBracketsPassFactory"/>
+        <highlightingPassFactory implementation="com.hua.rainbow_parentheses.RainbowVariablesPassFactory"/>
         <highlightingPassFactory implementation="com.hua.rainbow_parentheses.indents.RainbowIndentsPassFactory"/>
 
         <!-- 颜色设置页面 -->

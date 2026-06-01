@@ -2,7 +2,6 @@ package com.hua.rainbow_parentheses
 
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors
-import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.fileTypes.SyntaxHighlighter
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.tree.IElementType
@@ -131,16 +130,8 @@ object ParenthesesMatcher {
      * 长度为 1 的括号 token 一般不会落在字符串 / 注释里，此处仅作额外保险，
      * 应对个别按字符逐个切分字符串内容的词法分析器。
      */
-    private fun isCommentOrString(syntaxHighlighter: SyntaxHighlighter, tokenType: IElementType): Boolean {
-        for (key in syntaxHighlighter.getTokenHighlights(tokenType)) {
-            var k: TextAttributesKey? = key
-            while (k != null) {
-                if (k.externalName in SKIP_KEY_NAMES) return true
-                k = k.fallbackAttributeKey
-            }
-        }
-        return false
-    }
+    private fun isCommentOrString(syntaxHighlighter: SyntaxHighlighter, tokenType: IElementType): Boolean =
+        SyntaxTokenClassifier.hasAnyHighlightKey(syntaxHighlighter, tokenType, SKIP_KEY_NAMES)
 
     private val SKIP_KEY_NAMES: Set<String> = hashSetOf(
         DefaultLanguageHighlighterColors.STRING.externalName,

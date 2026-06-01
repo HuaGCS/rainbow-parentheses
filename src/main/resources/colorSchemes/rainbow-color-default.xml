@@ -250,4 +250,54 @@
             <option name="FOREGROUND" value="9B2755"/>
         </value>
     </option>
+    <option name="HUA_RAINBOW_VAR_0">
+        <value>
+            <option name="FOREGROUND" value="9B2727"/>
+        </value>
+    </option>
+    <option name="HUA_RAINBOW_VAR_1">
+        <value>
+            <option name="FOREGROUND" value="9B6C27"/>
+        </value>
+    </option>
+    <option name="HUA_RAINBOW_VAR_2">
+        <value>
+            <option name="FOREGROUND" value="849B27"/>
+        </value>
+    </option>
+    <option name="HUA_RAINBOW_VAR_3">
+        <value>
+            <option name="FOREGROUND" value="3E9B27"/>
+        </value>
+    </option>
+    <option name="HUA_RAINBOW_VAR_4">
+        <value>
+            <option name="FOREGROUND" value="279B55"/>
+        </value>
+    </option>
+    <option name="HUA_RAINBOW_VAR_5">
+        <value>
+            <option name="FOREGROUND" value="279B9B"/>
+        </value>
+    </option>
+    <option name="HUA_RAINBOW_VAR_6">
+        <value>
+            <option name="FOREGROUND" value="27559B"/>
+        </value>
+    </option>
+    <option name="HUA_RAINBOW_VAR_7">
+        <value>
+            <option name="FOREGROUND" value="3E279B"/>
+        </value>
+    </option>
+    <option name="HUA_RAINBOW_VAR_8">
+        <value>
+            <option name="FOREGROUND" value="84279B"/>
+        </value>
+    </option>
+    <option name="HUA_RAINBOW_VAR_9">
+        <value>
+            <option name="FOREGROUND" value="9B2755"/>
+        </value>
+    </option>
 </list>
