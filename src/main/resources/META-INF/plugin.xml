@@ -27,6 +27,8 @@
     <depends>com.intellij.modules.lang</depends>
     <!-- 可选依赖：存在 Java 插件时启用作用域感知的 Java 变量着色 -->
     <depends optional="true" config-file="rainbow-java.xml">com.intellij.java</depends>
+    <!-- 可选依赖：存在 Kotlin 插件时启用作用域感知的 Kotlin 变量着色 -->
+    <depends optional="true" config-file="rainbow-kotlin.xml">org.jetbrains.kotlin</depends>
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- 设置服务 -->

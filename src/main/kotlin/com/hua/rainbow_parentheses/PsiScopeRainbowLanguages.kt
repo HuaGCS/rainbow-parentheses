@@ -12,7 +12,7 @@ import com.intellij.lang.Language
  */
 object PsiScopeRainbowLanguages {
 
-    private val handledIds: Set<String> = hashSetOf("JAVA")
+    private val handledIds: Set<String> = hashSetOf("JAVA", "kotlin")
 
     fun handles(language: Language): Boolean {
         var current: Language? = language
