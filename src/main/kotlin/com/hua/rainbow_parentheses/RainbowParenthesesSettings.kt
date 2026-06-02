@@ -31,6 +31,7 @@ class RainbowParenthesesSettings : PersistentStateComponent<RainbowParenthesesSe
     var enableScopeHighlighting: Boolean = true
     var showIndentGuides: Boolean = true
     var enableRainbowVariables: Boolean = false
+    var enableRainbowTags: Boolean = false
 
     companion object {
         fun getInstance(): RainbowParenthesesSettings =

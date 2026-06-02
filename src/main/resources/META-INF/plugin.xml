@@ -29,6 +29,8 @@
     <depends optional="true" config-file="rainbow-java.xml">com.intellij.java</depends>
     <!-- 可选依赖：存在 Kotlin 插件时启用作用域感知的 Kotlin 变量着色 -->
     <depends optional="true" config-file="rainbow-kotlin.xml">org.jetbrains.kotlin</depends>
+    <!-- 可选依赖：存在 XML 模块时启用按深度着色的 XML / HTML 标签名 -->
+    <depends optional="true" config-file="rainbow-xml.xml">com.intellij.modules.xml</depends>
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- 设置服务 -->

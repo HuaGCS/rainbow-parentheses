@@ -8,3 +8,4 @@ build
 .fastRequest
 .run
 .xcodemap
+.mcp.json

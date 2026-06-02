@@ -20,6 +20,7 @@ object RainbowColorsManager {
     private const val ANGLE_PREFIX  = "HUA_RAINBOW_ANGLE_"
     private const val INDENT_PREFIX = "HUA_RAINBOW_INDENT_"
     private const val VAR_PREFIX    = "HUA_RAINBOW_VAR_"
+    private const val TAG_PREFIX    = "HUA_RAINBOW_TAG_"
 
     private val prefixMap = mapOf(
         ParenthesesType.ROUND  to ROUND_PREFIX,
@@ -39,6 +40,9 @@ object RainbowColorsManager {
 
     private val variableColorKeys: List<TextAttributesKey> =
         (0..9).map { i -> TextAttributesKey.createTextAttributesKey("$VAR_PREFIX$i") }
+
+    private val tagColorKeys: List<TextAttributesKey> =
+        (0..9).map { i -> TextAttributesKey.createTextAttributesKey("$TAG_PREFIX$i") }
 
     fun initialize() {
         // 初始化逻辑
@@ -70,4 +74,10 @@ object RainbowColorsManager {
      */
     fun getVariableColorKey(name: String, scopeSeed: Int): TextAttributesKey =
         variableColorKeys[Math.floorMod(name.hashCode() * 31 + scopeSeed, colorCount())]
+
+    fun getTagColorKeys(): List<TextAttributesKey> = tagColorKeys
+
+    /** 按标签嵌套深度取色，循环周期为当前颜色层数。 */
+    fun getTagColorKey(depth: Int): TextAttributesKey =
+        tagColorKeys[Math.floorMod(depth, colorCount())]
 }
