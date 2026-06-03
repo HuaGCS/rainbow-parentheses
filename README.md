@@ -62,7 +62,7 @@ nesting level for IntelliJ Platform IDEs. Free and open source.
 3. 点齿轮图标 ⚙ → `Install Plugin from Disk…`，选中刚下载的 zip。
 4. 提示重启 IDE 时确认重启。
 
-兼容 IntelliJ Platform 2025.1（since-build `251`）及之后所有版本（IntelliJ IDEA、PyCharm、WebStorm、GoLand、Android Studio 等基于该平台的 IDE 均可）。
+兼容 IntelliJ Platform 2024.1（since-build `241`）及之后所有版本（IntelliJ IDEA、PyCharm、WebStorm、GoLand、Android Studio 等基于该平台的 IDE 均可）。
 
 ## 使用
 
