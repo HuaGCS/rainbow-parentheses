@@ -1,0 +1,7 @@
+<!-- 仅在 YAML 插件存在时加载：按嵌套深度着色 YAML 键名。 -->
+<idea-plugin>
+    <extensions defaultExtensionNs="com.intellij">
+        <highlightingPassFactory
+                implementation="com.hua.rainbow_parentheses.yaml.YamlRainbowKeysPassFactory"/>
+    </extensions>
+</idea-plugin>

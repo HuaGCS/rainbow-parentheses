@@ -50,6 +50,9 @@ class RainbowColorSettingsPage : ColorSettingsPage {
 
 // ---------- Tags (XML / HTML tag names colored by nesting depth 1-10) ----------
 <<t0>level0</t0>> <<t1>level1</t1>> <<t2>level2</t2>> <<t3>level3</t3>> <<t4>level4</t4>> <<t5>level5</t5>> <<t6>level6</t6>> <<t7>level7</t7>> <<t8>level8</t8>> <<t9>level9</t9>>
+
+// ---------- Keys (JSON / YAML key names colored by nesting depth 1-10) ----------
+<k0>depth0</k0>: <k1>depth1</k1>: <k2>depth2</k2>: <k3>depth3</k3>: <k4>depth4</k4>: <k5>depth5</k5>: <k6>depth6</k6>: <k7>depth7</k7>: <k8>depth8</k8>: <k9>depth9</k9>:
         """.trimIndent()
 
         private val DESCRIPTORS: Array<AttributesDescriptor> by lazy {
@@ -65,7 +68,10 @@ class RainbowColorSettingsPage : ColorSettingsPage {
             val tags = RainbowColorsManager.getTagColorKeys().mapIndexed { index, key ->
                 AttributesDescriptor("Tags//Depth ${index + 1}", key)
             }
-            (brackets + variables + tags).toTypedArray()
+            val keys = RainbowColorsManager.getKeyColorKeys().mapIndexed { index, key ->
+                AttributesDescriptor("Keys//Depth ${index + 1}", key)
+            }
+            (brackets + variables + tags + keys).toTypedArray()
         }
 
         private val TAG_DESCRIPTOR_MAP: Map<String, TextAttributesKey> by lazy {
@@ -80,7 +86,10 @@ class RainbowColorSettingsPage : ColorSettingsPage {
             val tags = RainbowColorsManager.getTagColorKeys().mapIndexed { index, key ->
                 "t$index" to key
             }
-            (brackets + variables + tags).toMap()
+            val keys = RainbowColorsManager.getKeyColorKeys().mapIndexed { index, key ->
+                "k$index" to key
+            }
+            (brackets + variables + tags + keys).toMap()
         }
     }
 

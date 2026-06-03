@@ -31,6 +31,8 @@
     <depends optional="true" config-file="rainbow-kotlin.xml">org.jetbrains.kotlin</depends>
     <!-- 可选依赖：存在 XML 模块时启用按深度着色的 XML / HTML 标签名 -->
     <depends optional="true" config-file="rainbow-xml.xml">com.intellij.modules.xml</depends>
+    <!-- 可选依赖：存在 YAML 插件时启用按深度着色的 YAML 键名 -->
+    <depends optional="true" config-file="rainbow-yaml.xml">org.jetbrains.plugins.yaml</depends>
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- 设置服务 -->
@@ -40,6 +42,7 @@
         <highlightingPassFactory implementation="com.hua.rainbow_parentheses.RainbowBracketsPassFactory"/>
         <highlightingPassFactory implementation="com.hua.rainbow_parentheses.RainbowVariablesPassFactory"/>
         <highlightingPassFactory implementation="com.hua.rainbow_parentheses.indents.RainbowIndentsPassFactory"/>
+        <highlightingPassFactory implementation="com.hua.rainbow_parentheses.json.JsonRainbowKeysPassFactory"/>
 
         <!-- 颜色设置页面 -->
         <colorSettingsPage implementation="com.hua.rainbow_parentheses.settings.RainbowColorSettingsPage"/>
