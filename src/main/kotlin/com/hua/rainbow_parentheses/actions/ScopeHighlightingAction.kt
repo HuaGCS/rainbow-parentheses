@@ -1,8 +1,7 @@
 package com.hua.rainbow_parentheses.actions
 
-import com.hua.rainbow_parentheses.ParenthesesMatcher
-import com.hua.rainbow_parentheses.RainbowColorsManager
 import com.hua.rainbow_parentheses.RainbowParenthesesSettings
+import com.hua.rainbow_parentheses.scope.ScopeResolver
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -22,10 +21,11 @@ import java.awt.Color
 import java.util.concurrent.Callable
 
 /**
- * 高亮光标所在括号作用域：找到包含光标的最内层括号对，
- * 给从开括号到闭括号的整个范围加一层背景高亮。
+ * 高亮光标所在作用域：
+ * - 有括号的语言：包含光标的最内层括号对，给开括号到闭括号的整个范围加底色（沿用原行为）。
+ * - 无括号包裹时（Python / YAML 等缩进结构，或括号外的代码）：回退到包含光标的最内层 PSI 代码块。
  *
- * 全文档括号扫描在后台线程的 ReadAction 中完成，避免阻塞 EDT；
+ * 作用域解析在后台线程的 ReadAction 中完成（见 [ScopeResolver]），避免阻塞 EDT；
  * 找到结果后回到 EDT 写入 markup。
  *
  * @author Hua
@@ -52,48 +52,30 @@ class ScopeHighlightingAction : AnAction() {
         val textLength = document.textLength
         val modalityState = ModalityState.stateForComponent(editor.component)
 
-        // 后台扫描全文档括号、定位最内层括号对
-        ReadAction.nonBlocking(Callable<ParenthesesMatcher.ParenthesesPair?> {
-            val syntaxHighlighter = project?.let {
-                PsiDocumentManager.getInstance(it).getPsiFile(document)?.let { psiFile ->
-                    SyntaxHighlighterFactory.getSyntaxHighlighter(psiFile.language, it, psiFile.virtualFile)
-                }
+        ReadAction.nonBlocking(Callable<ScopeResolver.Scope?> {
+            val psiFile = project?.let { PsiDocumentManager.getInstance(it).getPsiFile(document) }
+            val syntaxHighlighter = psiFile?.let {
+                SyntaxHighlighterFactory.getSyntaxHighlighter(it.language, project, it.virtualFile)
             }
-            val allPairs = if (syntaxHighlighter != null) {
-                ParenthesesMatcher.findMatchingBrackets(document.immutableCharSequence, 0, syntaxHighlighter)
-            } else {
-                ParenthesesMatcher.findMatchingBrackets(document, 0, textLength)
-            }
-            allPairs
-                .filter { pair ->
-                    pair.openRange.startOffset <= caret && caret <= pair.closeRange.endOffset
-                }
-                .minByOrNull { pair ->
-                    pair.closeRange.endOffset - pair.openRange.startOffset
-                }
+            ScopeResolver.resolve(psiFile, document, caret, syntaxHighlighter)
         })
             .expireWhen { editor.isDisposed }
-            .finishOnUiThread(modalityState) { innermost ->
-                if (innermost != null) {
-                    applyScopeHighlight(editor, innermost, textLength)
+            .finishOnUiThread(modalityState) { scope ->
+                if (scope != null) {
+                    applyScopeHighlight(editor, scope, textLength)
                 }
             }
             .submit(AppExecutorUtil.getAppExecutorService())
     }
 
-    private fun applyScopeHighlight(
-        editor: Editor,
-        pair: ParenthesesMatcher.ParenthesesPair,
-        textLength: Int
-    ) {
+    private fun applyScopeHighlight(editor: Editor, scope: ScopeResolver.Scope, textLength: Int) {
         if (editor.isDisposed) return
 
-        val openStart = pair.openRange.startOffset
-        val closeEnd = pair.closeRange.endOffset
-        if (openStart < 0 || closeEnd > textLength || openStart >= closeEnd) return
+        val start = scope.startOffset
+        val end = scope.endOffset
+        if (start < 0 || end > textLength || start >= end) return
 
-        val colorKey = RainbowColorsManager.getColorKey(pair.type, pair.level)
-        val fg = editor.colorsScheme.getAttributes(colorKey)?.foregroundColor ?: return
+        val fg = editor.colorsScheme.getAttributes(scope.colorKey)?.foregroundColor ?: return
         val bg = editor.colorsScheme.defaultBackground
         val attributes = TextAttributes().apply {
             backgroundColor = blendColors(bg, fg, BLEND_WEIGHT)
@@ -103,8 +85,8 @@ class ScopeHighlightingAction : AnAction() {
         clearPreviousHighlight(editor)
 
         val highlighter = editor.markupModel.addRangeHighlighter(
-            openStart,
-            closeEnd,
+            start,
+            end,
             HighlighterLayer.SELECTION - 1,
             attributes,
             HighlighterTargetArea.EXACT_RANGE
