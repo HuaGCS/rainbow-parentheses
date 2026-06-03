@@ -13,8 +13,11 @@ nesting level for IntelliJ Platform IDEs. Free and open source.
 <ul>
   <li><b>Rainbow brackets</b>: colorize <code>()</code>, <code>[]</code>, <code>{}</code> and <code>&lt;&gt;</code> by nesting depth; 1–10 cycling colors configurable.</li>
   <li><b>Rainbow indent guides</b>: takes over the IDE's native indent guide renderer, so positions and lengths match the native guides exactly; colored by depth, dimmed overall, and the guide of the block containing the caret is auto-brightened.</li>
+  <li><b>Rainbow identifiers</b>: colorize identifiers so the same name gets the same color; for Java / Kotlin it is scope-aware (only locals and parameters, and the same name in different scopes gets different colors). Off by default.</li>
+  <li><b>Rainbow tags</b>: colorize XML / HTML tag names by nesting depth (start and end tag share a color). Off by default.</li>
+  <li><b>Rainbow keys</b>: colorize JSON / YAML key names by nesting depth. Off by default.</li>
   <li><b>Scope highlighting</b>: <code>Ctrl + right mouse click</code> highlights the innermost bracket scope under the caret.</li>
-  <li><b>Fully customizable colors</b>: tune the 40 bracket colors (4 types × 10 levels) plus 10 indent-guide colors at <code>Settings → Editor → Color Scheme → Rainbow Parentheses</code>; adapts to light/dark themes.</li>
+  <li><b>Fully customizable colors</b>: tune the 40 bracket colors (4 types × 10 levels), 10 indent-guide colors, and the identifier / tag / key palettes at <code>Settings → Editor → Color Scheme → Rainbow Parentheses</code>; adapts to light/dark themes.</li>
   <li><b>Large-file safeguard</b>: skips coloring for files above a configurable line threshold (default 1000) to keep the editor responsive.</li>
   <li><b>Exclusion lists</b>: disable per file type or language ID.</li>
 </ul>
@@ -39,8 +42,11 @@ nesting level for IntelliJ Platform IDEs. Free and open source.
 <ul>
   <li><b>彩虹括号</b>：四类括号 <code>()</code> <code>[]</code> <code>{}</code> <code>&lt;&gt;</code> 按嵌套层级着色，循环层数 1–10 可配置。</li>
   <li><b>彩虹缩进线</b>：直接接管 IDE 原生缩进引导线的渲染器，与原生位置 / 长度完全一致；按缩进深度着色、整体淡显，光标所在块对应的引导线自动加亮。</li>
+  <li><b>彩虹标识符</b>：按名字给标识符着色（同名同色）；Java / Kotlin 进一步作用域感知，只染局部变量与参数，同名不同作用域不同色。默认关闭。</li>
+  <li><b>彩虹标签</b>：XML / HTML 标签名按嵌套深度着色（开闭标签同色）。默认关闭。</li>
+  <li><b>彩虹键名</b>：JSON / YAML 键名按嵌套深度着色。默认关闭。</li>
   <li><b>作用域高亮</b>：<code>Ctrl + 鼠标右键</code> 高亮光标所在的最内层括号作用域。</li>
-  <li><b>颜色完全可定制</b>：在 <code>Settings → Editor → Color Scheme → Rainbow Parentheses</code> 中可逐项调整 40 个括号颜色 + 10 个缩进线颜色。</li>
+  <li><b>颜色完全可定制</b>：在 <code>Settings → Editor → Color Scheme → Rainbow Parentheses</code> 中可逐项调整 40 个括号颜色 + 10 个缩进线颜色，以及标识符 / 标签 / 键名调色板。</li>
   <li><b>设置页</b>：<code>Settings → Tools → Rainbow Parentheses</code>。</li>
   <li><b>快捷键</b>：<code>Ctrl + Shift + R</code> 整体开关；<code>Ctrl + 鼠标右键</code> 作用域高亮。</li>
   <li>尖括号基于纯文本匹配，对泛型 / 比较运算符可能误判，默认关闭。</li>

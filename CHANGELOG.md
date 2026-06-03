@@ -4,6 +4,17 @@
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-06-03
+
+### Added
+
+- 标识符彩虹着色：按名字哈希给标识符上色（同名同色）；Java / Kotlin 进一步基于 PSI 作用域感知，只染局部变量与参数，同名不同作用域得到不同颜色，字段 / 类型 / 方法名不染。设置项「按名字给标识符着色」，默认关闭
+- XML / HTML 标签名按嵌套深度着色，开标签名与闭标签名同色。设置项「按嵌套深度给 XML / HTML 标签名着色」，默认关闭
+- JSON / YAML 键名按嵌套深度着色。设置项「按嵌套深度给 JSON / YAML 键名着色」，默认关闭
+- 颜色设置页新增 Variables / Tags / Keys 分组，各 10 档颜色可逐项调整，明 / 暗主题各一套
+- 标识符 / 标签 / 键名着色均通过可选依赖按需注册，缺少对应语言模块的 IDE 仍可正常加载插件
+- 通过 IntelliJ Plugin Verifier 在 IC-241.19416.15 上的兼容性校验
+
 ## [0.0.2] - 2026-05-25
 
 ### Changed
@@ -24,6 +35,7 @@
 - 大文件保护：默认对超过 1000 行的文件不着色，阈值可在设置页调整
 - 排除清单：可按文件类型或语言 ID 排除
 
-[Unreleased]: https://github.com/HuaGCS/rainbow-parentheses/compare/v0.0.2...HEAD
+[Unreleased]: https://github.com/HuaGCS/rainbow-parentheses/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/HuaGCS/rainbow-parentheses/compare/v0.0.2...v0.1.0
 [0.0.2]: https://github.com/HuaGCS/rainbow-parentheses/compare/v0.0.1...v0.0.2
 [0.0.1]: https://github.com/HuaGCS/rainbow-parentheses/releases/tag/v0.0.1
