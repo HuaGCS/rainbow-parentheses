@@ -34,6 +34,7 @@ class RainbowParenthesesSettings : PersistentStateComponent<RainbowParenthesesSe
     var enableRainbowVariables: Boolean = false
     var enableRainbowTags: Boolean = false
     var enableRainbowKeys: Boolean = false
+    var enableRainbowLambdaArrow: Boolean = false
 
     companion object {
         fun getInstance(): RainbowParenthesesSettings =

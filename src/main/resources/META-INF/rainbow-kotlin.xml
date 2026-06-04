@@ -3,5 +3,7 @@
     <extensions defaultExtensionNs="com.intellij">
         <highlightingPassFactory
                 implementation="com.hua.rainbow_parentheses.kotlin.KotlinRainbowVariablesPassFactory"/>
+        <highlightingPassFactory
+                implementation="com.hua.rainbow_parentheses.kotlin.KotlinLambdaArrowPassFactory"/>
     </extensions>
 </idea-plugin>

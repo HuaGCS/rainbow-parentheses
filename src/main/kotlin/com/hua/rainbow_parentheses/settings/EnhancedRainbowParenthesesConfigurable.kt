@@ -46,6 +46,7 @@ class EnhancedRainbowParenthesesConfigurable : Configurable {
     private lateinit var enableRainbowVariablesCheckBox: JBCheckBox
     private lateinit var enableRainbowTagsCheckBox: JBCheckBox
     private lateinit var enableRainbowKeysCheckBox: JBCheckBox
+    private lateinit var enableRainbowLambdaArrowCheckBox: JBCheckBox
 
     private lateinit var excludedFileTypesField: JBTextField
     private lateinit var excludedLanguagesField: JBTextField
@@ -106,6 +107,8 @@ class EnhancedRainbowParenthesesConfigurable : Configurable {
             JBCheckBox("按嵌套深度给 XML / HTML 标签名着色（默认关闭）")
         enableRainbowKeysCheckBox =
             JBCheckBox("按嵌套深度给 JSON / YAML 键名着色（默认关闭）")
+        enableRainbowLambdaArrowCheckBox =
+            JBCheckBox("按嵌套深度给 Kotlin lambda 的 -> 箭头着色（默认关闭）")
 
         excludedFileTypesField = JBTextField()
         excludedLanguagesField = JBTextField()
@@ -136,6 +139,7 @@ class EnhancedRainbowParenthesesConfigurable : Configurable {
             .addComponent(enableRainbowVariablesCheckBox)
             .addComponent(enableRainbowTagsCheckBox)
             .addComponent(enableRainbowKeysCheckBox)
+            .addComponent(enableRainbowLambdaArrowCheckBox)
             .panel
 
     private fun indentScopePanel(): JComponent =
@@ -180,6 +184,7 @@ class EnhancedRainbowParenthesesConfigurable : Configurable {
                 || enableRainbowVariablesCheckBox.isSelected != settings.enableRainbowVariables
                 || enableRainbowTagsCheckBox.isSelected != settings.enableRainbowTags
                 || enableRainbowKeysCheckBox.isSelected != settings.enableRainbowKeys
+                || enableRainbowLambdaArrowCheckBox.isSelected != settings.enableRainbowLambdaArrow
                 || excludedFileTypesField.text != settings.excludedFileTypes.joinToString(",")
                 || excludedLanguagesField.text != settings.excludedLanguages.joinToString(",")
     }
@@ -201,6 +206,7 @@ class EnhancedRainbowParenthesesConfigurable : Configurable {
         settings.enableRainbowVariables = enableRainbowVariablesCheckBox.isSelected
         settings.enableRainbowTags = enableRainbowTagsCheckBox.isSelected
         settings.enableRainbowKeys = enableRainbowKeysCheckBox.isSelected
+        settings.enableRainbowLambdaArrow = enableRainbowLambdaArrowCheckBox.isSelected
 
         settings.excludedFileTypes.clear()
         excludedFileTypesField.text.trim().split(",")
@@ -240,6 +246,7 @@ class EnhancedRainbowParenthesesConfigurable : Configurable {
         enableRainbowVariablesCheckBox.isSelected = settings.enableRainbowVariables
         enableRainbowTagsCheckBox.isSelected = settings.enableRainbowTags
         enableRainbowKeysCheckBox.isSelected = settings.enableRainbowKeys
+        enableRainbowLambdaArrowCheckBox.isSelected = settings.enableRainbowLambdaArrow
         excludedFileTypesField.text = settings.excludedFileTypes.joinToString(",")
         excludedLanguagesField.text = settings.excludedLanguages.joinToString(",")
     }

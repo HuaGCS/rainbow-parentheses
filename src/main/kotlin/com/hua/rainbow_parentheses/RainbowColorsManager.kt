@@ -22,6 +22,7 @@ object RainbowColorsManager {
     private const val VAR_PREFIX    = "HUA_RAINBOW_VAR_"
     private const val TAG_PREFIX    = "HUA_RAINBOW_TAG_"
     private const val KEY_PREFIX    = "HUA_RAINBOW_KEY_"
+    private const val ARROW_PREFIX  = "HUA_RAINBOW_ARROW_"
 
     private val prefixMap = mapOf(
         ParenthesesType.ROUND  to ROUND_PREFIX,
@@ -47,6 +48,9 @@ object RainbowColorsManager {
 
     private val keyColorKeys: List<TextAttributesKey> =
         (0..9).map { i -> TextAttributesKey.createTextAttributesKey("$KEY_PREFIX$i") }
+
+    private val arrowColorKeys: List<TextAttributesKey> =
+        (0..9).map { i -> TextAttributesKey.createTextAttributesKey("$ARROW_PREFIX$i") }
 
     fun initialize() {
         // 初始化逻辑
@@ -90,4 +94,10 @@ object RainbowColorsManager {
     /** 按 JSON / YAML 键的嵌套深度取色，循环周期为当前颜色层数。 */
     fun getKeyColorKey(depth: Int): TextAttributesKey =
         keyColorKeys[Math.floorMod(depth, colorCount())]
+
+    fun getArrowColorKeys(): List<TextAttributesKey> = arrowColorKeys
+
+    /** 按 Kotlin lambda 的嵌套深度给 `->` 箭头取色，循环周期为当前颜色层数。 */
+    fun getArrowColorKey(depth: Int): TextAttributesKey =
+        arrowColorKeys[Math.floorMod(depth, colorCount())]
 }
