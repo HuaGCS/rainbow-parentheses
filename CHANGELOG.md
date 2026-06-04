@@ -4,6 +4,12 @@
 
 ## [Unreleased]
 
+## [0.1.3] - 2026-06-04
+
+### Added
+
+- Kotlin lambda 的 `->` 箭头按 lambda 嵌套深度着色：嵌套越深颜色逐层变化，配合已有的彩虹花括号让 lambda 结构更醒目。设置项「按嵌套深度给 Kotlin lambda 的 -> 箭头着色」（`Settings → Tools → Rainbow Parentheses`），默认关闭。颜色可在 `Settings → Editor → Color Scheme → Rainbow Parentheses` 的 Lambda Arrows 分组调整
+
 ## [0.1.2] - 2026-06-04
 
 ### Added
@@ -57,7 +63,8 @@
 - 大文件保护：默认对超过 1000 行的文件不着色，阈值可在设置页调整
 - 排除清单：可按文件类型或语言 ID 排除
 
-[Unreleased]: https://github.com/HuaGCS/rainbow-parentheses/compare/v0.1.2...HEAD
+[Unreleased]: https://github.com/HuaGCS/rainbow-parentheses/compare/v0.1.3...HEAD
+[0.1.3]: https://github.com/HuaGCS/rainbow-parentheses/compare/v0.1.2...v0.1.3
 [0.1.2]: https://github.com/HuaGCS/rainbow-parentheses/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/HuaGCS/rainbow-parentheses/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/HuaGCS/rainbow-parentheses/compare/v0.0.2...v0.1.0
