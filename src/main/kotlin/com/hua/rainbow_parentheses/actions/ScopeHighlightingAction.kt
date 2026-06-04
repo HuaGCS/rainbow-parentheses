@@ -45,10 +45,10 @@ class ScopeHighlightingAction : AnAction() {
         val editor = e.getData(CommonDataKeys.EDITOR) ?: return
         val project = e.project ?: editor.project
 
-        // 立即清除上一次的作用域高亮（EDT 上 markup 操作）
-        clearPreviousHighlight(editor)
-
-        if (!RainbowParenthesesSettings.getInstance().enableScopeHighlighting) return
+        if (!RainbowParenthesesSettings.getInstance().enableScopeHighlighting) {
+            clearPreviousHighlight(editor)
+            return
+        }
 
         // 鼠标快捷键（Ctrl+右键）不会移动光标，必须用实际点击位置；否则回退到光标。
         val caret = offsetAtClickOrCaret(e, editor)
@@ -65,11 +65,29 @@ class ScopeHighlightingAction : AnAction() {
         })
             .expireWhen { editor.isDisposed }
             .finishOnUiThread(modalityState) { scope ->
-                if (scope != null) {
-                    applyScopeHighlight(editor, scope, textLength)
-                }
+                applyOrToggleScope(editor, scope, textLength)
             }
             .submit(AppExecutorUtil.getAppExecutorService())
+    }
+
+    /**
+     * 应用或切换作用域高亮：
+     * - 本次解析出的作用域与当前正显示的完全相同 → 关闭高亮（再次右键即取消）。
+     * - 不同作用域 → 切换到新的；解析为空 → 清除当前高亮。
+     */
+    private fun applyOrToggleScope(editor: Editor, scope: ScopeResolver.Scope?, textLength: Int) {
+        if (editor.isDisposed) return
+
+        val existing = editor.getUserData(SCOPE_HIGHLIGHTER_KEY)?.takeIf { it.isValid }
+        if (scope != null && existing != null &&
+            existing.startOffset == scope.startOffset && existing.endOffset == scope.endOffset
+        ) {
+            clearPreviousHighlight(editor)
+            return
+        }
+
+        clearPreviousHighlight(editor)
+        if (scope != null) applyScopeHighlight(editor, scope, textLength)
     }
 
     private fun applyScopeHighlight(editor: Editor, scope: ScopeResolver.Scope, textLength: Int) {
@@ -84,9 +102,6 @@ class ScopeHighlightingAction : AnAction() {
         val attributes = TextAttributes().apply {
             backgroundColor = blendColors(bg, fg, BLEND_WEIGHT)
         }
-
-        // 在 await 期间用户可能已再点别处触发了新的清理；为防重叠，重做一次清理
-        clearPreviousHighlight(editor)
 
         val highlighter = editor.markupModel.addRangeHighlighter(
             start,
