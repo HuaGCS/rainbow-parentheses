@@ -4,9 +4,18 @@
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-06-04
+
 ### Changed
 
 - 作用域高亮（`Ctrl + 鼠标右键`）泛化到无括号语言：括号语言仍取最内层括号对；无括号包裹时（Python / YAML 等缩进结构，或括号外的代码）回退到包含光标的最内层跨行 PSI 代码块，按嵌套深度取缩进色
+- 顶层单行条目（无可用子块）右键时回退为高亮该行本身，而不再无反应或染满整篇文件
+- 同一作用域再次右键现在会关闭高亮（toggle）；点到不同作用域则切换
+
+### Fixed
+
+- `Ctrl + 鼠标右键` 不移动光标导致作用域按错误位置解析：改用实际点击位置（经屏幕坐标换算到编辑器内容组件），消除行错位
+- 点击落在块结束边界（值在行尾，如 YAML `https: 443`）时解析不到所在块：改为同时探测光标与其前一字符，取包含光标的最内层跨行块
 
 ## [0.1.0] - 2026-06-03
 
@@ -39,7 +48,8 @@
 - 大文件保护：默认对超过 1000 行的文件不着色，阈值可在设置页调整
 - 排除清单：可按文件类型或语言 ID 排除
 
-[Unreleased]: https://github.com/HuaGCS/rainbow-parentheses/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/HuaGCS/rainbow-parentheses/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/HuaGCS/rainbow-parentheses/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/HuaGCS/rainbow-parentheses/compare/v0.0.2...v0.1.0
 [0.0.2]: https://github.com/HuaGCS/rainbow-parentheses/compare/v0.0.1...v0.0.2
 [0.0.1]: https://github.com/HuaGCS/rainbow-parentheses/releases/tag/v0.0.1
