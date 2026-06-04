@@ -16,7 +16,8 @@ nesting level for IntelliJ Platform IDEs. Free and open source.
   <li><b>Rainbow identifiers</b>: colorize identifiers so the same name gets the same color; for Java / Kotlin it is scope-aware (only locals and parameters, and the same name in different scopes gets different colors). Off by default.</li>
   <li><b>Rainbow tags</b>: colorize XML / HTML tag names by nesting depth (start and end tag share a color). Off by default.</li>
   <li><b>Rainbow keys</b>: colorize JSON / YAML key names by nesting depth. Off by default.</li>
-  <li><b>Scope highlighting</b>: <code>Ctrl + right mouse click</code> highlights the innermost bracket scope under the caret.</li>
+  <li><b>Scope highlighting</b>: <code>Ctrl + right mouse click</code> highlights the scope under the caret (innermost bracket pair, or the enclosing block in brace-less languages like YAML).</li>
+  <li><b>Current-block highlight</b>: optionally tint the block under the caret automatically and follow it as the caret moves. Off by default.</li>
   <li><b>Fully customizable colors</b>: tune the 40 bracket colors (4 types × 10 levels), 10 indent-guide colors, and the identifier / tag / key palettes at <code>Settings → Editor → Color Scheme → Rainbow Parentheses</code>; adapts to light/dark themes.</li>
   <li><b>Large-file safeguard</b>: skips coloring for files above a configurable line threshold (default 1000) to keep the editor responsive.</li>
   <li><b>Exclusion lists</b>: disable per file type or language ID.</li>
@@ -45,7 +46,8 @@ nesting level for IntelliJ Platform IDEs. Free and open source.
   <li><b>彩虹标识符</b>：按名字给标识符着色（同名同色）；Java / Kotlin 进一步作用域感知，只染局部变量与参数，同名不同作用域不同色。默认关闭。</li>
   <li><b>彩虹标签</b>：XML / HTML 标签名按嵌套深度着色（开闭标签同色）。默认关闭。</li>
   <li><b>彩虹键名</b>：JSON / YAML 键名按嵌套深度着色。默认关闭。</li>
-  <li><b>作用域高亮</b>：<code>Ctrl + 鼠标右键</code> 高亮光标所在的最内层括号作用域。</li>
+  <li><b>作用域高亮</b>：<code>Ctrl + 鼠标右键</code> 高亮光标所在作用域（最内层括号对，或 YAML 等无括号语言的所在块）。</li>
+  <li><b>当前块持续高亮</b>：可选开启，自动淡染光标所在块并随光标移动实时更新。默认关闭。</li>
   <li><b>颜色完全可定制</b>：在 <code>Settings → Editor → Color Scheme → Rainbow Parentheses</code> 中可逐项调整 40 个括号颜色 + 10 个缩进线颜色，以及标识符 / 标签 / 键名调色板。</li>
   <li><b>设置页</b>：<code>Settings → Tools → Rainbow Parentheses</code>。</li>
   <li><b>快捷键</b>：<code>Ctrl + Shift + R</code> 整体开关；<code>Ctrl + 鼠标右键</code> 作用域高亮。</li>

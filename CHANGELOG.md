@@ -4,7 +4,16 @@
 
 ## [Unreleased]
 
-## [0.1.1] - 2026-06-04
+## [0.1.2] - 2026-06-04
+
+### Added
+
+- 当前块随光标持续高亮：开启后光标移动时自动淡染所在代码块（括号块 / 跨行 PSI 块），随光标实时更新；无块的顶层单行条目则淡染该行。设置项「当前块随光标持续高亮」（`Settings → Tools → Rainbow Parentheses`），默认关闭，开关即时生效。与手动 `Ctrl + 鼠标右键` 作用域高亮相互独立、可同时开
+
+### Fixed
+
+- 作用域 / 当前块解析不再把尖括号 `<>` 当作作用域括号：避免泛型 / 比较运算符、以及 XML 自闭合标签 `<.../>`（`<` 因闭合是 `/>` 双字符 token 而与后面无关的 `>` 错配）导致的范围错乱
+- XML 标签间只含空白的文本节点不再被当作代码块，改为回退到外层标签
 
 ### Changed
 
@@ -48,7 +57,8 @@
 - 大文件保护：默认对超过 1000 行的文件不着色，阈值可在设置页调整
 - 排除清单：可按文件类型或语言 ID 排除
 
-[Unreleased]: https://github.com/HuaGCS/rainbow-parentheses/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/HuaGCS/rainbow-parentheses/compare/v0.1.2...HEAD
+[0.1.2]: https://github.com/HuaGCS/rainbow-parentheses/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/HuaGCS/rainbow-parentheses/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/HuaGCS/rainbow-parentheses/compare/v0.0.2...v0.1.0
 [0.0.2]: https://github.com/HuaGCS/rainbow-parentheses/compare/v0.0.1...v0.0.2
