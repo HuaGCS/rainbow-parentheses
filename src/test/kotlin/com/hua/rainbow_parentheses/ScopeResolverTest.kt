@@ -127,4 +127,39 @@ class ScopeResolverTest : BasePlatformTestCase() {
         myFixture.configureByText("a.yaml", "k: 1\n<caret>\nj: 2")
         assertNull("空行无内容，应不高亮", resolveAtCaret())
     }
+
+    fun testXmlAngleBracketsAreNotTreatedAsScope() {
+        // 尖括号不作作用域：自闭合标签 `<ref .../>` 的 `<` 不应与后面无关的 `>` 配对成大范围
+        myFixture.configureByText(
+            "a.xml",
+            """
+            <beans>
+                <bean id="d">
+                    <list>
+                        <ref bean="al<caret>pha"/>
+                        <ref bean="beta"/>
+                    </list>
+                </bean>
+            </beans>
+            """.trimIndent()
+        )
+        val scope = resolveAtCaret()
+        assertNotNull("XML 应解析出所在块", scope)
+        val text = textOf(scope!!)
+        assertTrue("应是 <list> 块（含两个 ref）", text.startsWith("<list>") && text.contains("beta"))
+        assertTrue("应闭合到 </list>", text.contains("</list>"))
+    }
+
+    fun testXmlInterTagWhitespaceFallsBackToEnclosingTag() {
+        // 标签间只含空白的 XmlText 不应被当作块；应回退到外层 <list> 标签
+        myFixture.configureByText(
+            "a.xml",
+            "<beans>\n    <list>\n        <ref bean=\"a\"/><caret>\n        <ref bean=\"b\"/>\n    </list>\n</beans>"
+        )
+        val scope = resolveAtCaret()
+        assertNotNull("XML 标签间空白处也应解析出外层块", scope)
+        val text = textOf(scope!!)
+        assertTrue("应是 <list> 块而非空白节点", text.startsWith("<list>") && text.contains("</list>"))
+        assertFalse("不应只是空白", text.isBlank())
+    }
 }

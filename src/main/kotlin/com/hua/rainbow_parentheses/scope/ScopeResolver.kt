@@ -1,6 +1,7 @@
 package com.hua.rainbow_parentheses.scope
 
 import com.hua.rainbow_parentheses.ParenthesesMatcher
+import com.hua.rainbow_parentheses.ParenthesesType
 import com.hua.rainbow_parentheses.RainbowColorsManager
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.colors.TextAttributesKey
@@ -26,6 +27,9 @@ object ScopeResolver {
         val colorKey: TextAttributesKey
     )
 
+    /**
+     * 括号优先（不含尖括号）；无括号包裹时回退到包含光标的最内层跨行 PSI 块；再无块则回退到光标所在行。
+     */
     fun resolve(
         psiFile: PsiFile?,
         document: Document,
@@ -47,6 +51,9 @@ object ScopeResolver {
             ParenthesesMatcher.findMatchingBrackets(document, 0, document.textLength)
         }
         val pair = allPairs
+            // 尖括号 `<>` 不作为作用域括号：泛型 / 比较运算符 / XML 自闭合标签都会让其错配（如
+            // `<ref .../>` 的 `<` 因闭合是 `/>` 双字符 token 而与后面无关的 `>` 配对）。
+            .filter { it.type != ParenthesesType.ANGLE }
             .filter { it.openRange.startOffset <= caret && caret <= it.closeRange.endOffset }
             .minByOrNull { it.closeRange.endOffset - it.openRange.startOffset }
             ?: return null
@@ -82,7 +89,8 @@ object ScopeResolver {
                     range != null &&
                     range.startOffset <= caret && caret <= range.endOffset &&
                     spansMultipleLines(document, range.startOffset, range.endOffset) &&
-                    !coversWholeFile(document, range.startOffset, range.endOffset)
+                    !coversWholeFile(document, range.startOffset, range.endOffset) &&
+                    !isBlankRange(document, range.startOffset, range.endOffset)
                 ) {
                     candidates.add(cur)
                 }
@@ -102,6 +110,15 @@ object ScopeResolver {
 
         // 回退：没有可用子块（只剩整篇文件）时，高亮光标所在行本身——顶层单行条目也有反应。
         return lineScope(document, caret, probes)
+    }
+
+    /** 范围内是否全为空白（用于跳过 XML 标签间只含换行/缩进的 XmlText 节点）。 */
+    private fun isBlankRange(document: Document, startOffset: Int, endOffset: Int): Boolean {
+        val chars = document.immutableCharSequence
+        val s = startOffset.coerceIn(0, document.textLength)
+        val e = endOffset.coerceIn(0, document.textLength)
+        for (i in s until e) if (!chars[i].isWhitespace()) return false
+        return true
     }
 
     /** 高亮光标所在行的内容（跳过行首缩进）；空行返回 null。 */

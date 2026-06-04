@@ -29,6 +29,7 @@ class RainbowParenthesesSettings : PersistentStateComponent<RainbowParenthesesSe
     var doNotRainbowifyBigFiles: Boolean = true
     var bigFilesLineThreshold: Int = 1000
     var enableScopeHighlighting: Boolean = true
+    var enableCurrentBlockHighlight: Boolean = false
     var showIndentGuides: Boolean = true
     var enableRainbowVariables: Boolean = false
     var enableRainbowTags: Boolean = false

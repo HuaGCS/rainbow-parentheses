@@ -1,6 +1,7 @@
 package com.hua.rainbow_parentheses.settings
 
 import com.hua.rainbow_parentheses.RainbowParenthesesSettings
+import com.hua.rainbow_parentheses.scope.CurrentBlockHighlightInstaller
 import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.options.Configurable
@@ -40,6 +41,7 @@ class EnhancedRainbowParenthesesConfigurable : Configurable {
     private lateinit var bigFilesLineThresholdSpinner: JSpinner
 
     private lateinit var enableScopeHighlightingCheckBox: JBCheckBox
+    private lateinit var enableCurrentBlockHighlightCheckBox: JBCheckBox
     private lateinit var showIndentGuidesCheckBox: JBCheckBox
     private lateinit var enableRainbowVariablesCheckBox: JBCheckBox
     private lateinit var enableRainbowTagsCheckBox: JBCheckBox
@@ -95,6 +97,8 @@ class EnhancedRainbowParenthesesConfigurable : Configurable {
         bigFilesLineThresholdSpinner = JSpinner(SpinnerNumberModel(1000, 100, 100000, 100))
 
         enableScopeHighlightingCheckBox = JBCheckBox("启用作用域高亮（Ctrl+鼠标右键 点击括号内）")
+        enableCurrentBlockHighlightCheckBox =
+            JBCheckBox("当前块随光标持续高亮（光标移动时自动淡染所在代码块，默认关闭）")
         showIndentGuidesCheckBox = JBCheckBox("显示彩虹缩进线（替换原生缩进线，光标所在块加亮）")
         enableRainbowVariablesCheckBox =
             JBCheckBox("按名字给标识符着色（同名同色；基于词法，类型/方法名也会着色，默认关闭）")
@@ -138,6 +142,7 @@ class EnhancedRainbowParenthesesConfigurable : Configurable {
         FormBuilder.createFormBuilder()
             .addComponent(showIndentGuidesCheckBox)
             .addComponent(enableScopeHighlightingCheckBox)
+            .addComponent(enableCurrentBlockHighlightCheckBox)
             .panel
 
     private fun colorsPanel(): JComponent =
@@ -170,6 +175,7 @@ class EnhancedRainbowParenthesesConfigurable : Configurable {
                 || doNotRainbowifyBigFilesCheckBox.isSelected != settings.doNotRainbowifyBigFiles
                 || (bigFilesLineThresholdSpinner.value as Int) != settings.bigFilesLineThreshold
                 || enableScopeHighlightingCheckBox.isSelected != settings.enableScopeHighlighting
+                || enableCurrentBlockHighlightCheckBox.isSelected != settings.enableCurrentBlockHighlight
                 || showIndentGuidesCheckBox.isSelected != settings.showIndentGuides
                 || enableRainbowVariablesCheckBox.isSelected != settings.enableRainbowVariables
                 || enableRainbowTagsCheckBox.isSelected != settings.enableRainbowTags
@@ -190,6 +196,7 @@ class EnhancedRainbowParenthesesConfigurable : Configurable {
         settings.doNotRainbowifyBigFiles = doNotRainbowifyBigFilesCheckBox.isSelected
         settings.bigFilesLineThreshold = bigFilesLineThresholdSpinner.value as Int
         settings.enableScopeHighlighting = enableScopeHighlightingCheckBox.isSelected
+        settings.enableCurrentBlockHighlight = enableCurrentBlockHighlightCheckBox.isSelected
         settings.showIndentGuides = showIndentGuidesCheckBox.isSelected
         settings.enableRainbowVariables = enableRainbowVariablesCheckBox.isSelected
         settings.enableRainbowTags = enableRainbowTagsCheckBox.isSelected
@@ -208,6 +215,8 @@ class EnhancedRainbowParenthesesConfigurable : Configurable {
             .forEach { settings.excludedLanguages.add(it) }
 
         ApplicationManager.getApplication().invokeLater {
+            // 当前块持续高亮的开关即时生效（开→立刻显示，关→立刻清除）
+            CurrentBlockHighlightInstaller.refreshAllEditors()
             ProjectManager.getInstance().openProjects.forEach { project ->
                 DaemonCodeAnalyzer.getInstance(project).restart()
             }
@@ -226,6 +235,7 @@ class EnhancedRainbowParenthesesConfigurable : Configurable {
         doNotRainbowifyBigFilesCheckBox.isSelected = settings.doNotRainbowifyBigFiles
         bigFilesLineThresholdSpinner.value = settings.bigFilesLineThreshold
         enableScopeHighlightingCheckBox.isSelected = settings.enableScopeHighlighting
+        enableCurrentBlockHighlightCheckBox.isSelected = settings.enableCurrentBlockHighlight
         showIndentGuidesCheckBox.isSelected = settings.showIndentGuides
         enableRainbowVariablesCheckBox.isSelected = settings.enableRainbowVariables
         enableRainbowTagsCheckBox.isSelected = settings.enableRainbowTags

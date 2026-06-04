@@ -1,7 +1,7 @@
 package com.hua.rainbow_parentheses
 
+import com.hua.rainbow_parentheses.scope.CurrentBlockHighlightInstaller
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
 
@@ -19,15 +19,8 @@ class RainbowParenthesesStartupActivity : ProjectActivity {
         RainbowColorsManager.initialize()
 
         ApplicationManager.getApplication().invokeLater {
-            val editors = EditorFactory.getInstance().allEditors
-            editors.filter { it.project == project }.forEach { editor ->
-                setupEditorListeners(editor)
-            }
+            // 注册当前块持续高亮的编辑器/光标监听（应用级单例，幂等；在 EDT 上访问编辑器）
+            CurrentBlockHighlightInstaller.ensureInstalled()
         }
-    }
-
-    private fun setupEditorListeners(editor: com.intellij.openapi.editor.Editor) {
-        // 设置编辑器特定的监听器
-        // 例如：鼠标悬停、点击事件等
     }
 }
