@@ -59,37 +59,65 @@ object ScopeResolver {
     }
 
     /**
-     * PSI 块作用域回退：从光标处叶子向上找包含光标、且跨多行的最内层复合元素，
-     * 颜色按其上方跨行祖先数量（嵌套深度）取缩进色，与彩虹缩进线的块语义一致。
+     * PSI 块作用域回退：收集包含光标、跨多行、且不覆盖整篇文件的复合元素，取其中**范围最小**的一个。
+     *
+     * 同时从 `caret` 与 `caret-1` 两处探针向上遍历——点击常落在某块的结束边界（值在行尾，如 YAML
+     * 的 `https: 443`，偏移正好等于该块 endOffset）：此时 `findElementAt(caret)` 命中的是块之后、
+     * 不含光标的兄弟元素，必须靠 `caret-1` 探针才能找回真正的所在块。
+     *
+     * 颜色按所选块上方的跨行祖先数量（嵌套深度）取缩进色，与彩虹缩进线的块语义一致。
      */
     private fun findPsiBlockScope(psiFile: PsiFile, document: Document, caret: Int): Scope? {
-        val leaf = psiFile.findElementAt(caret)
-            ?: psiFile.findElementAt((caret - 1).coerceAtLeast(0))
-            ?: return null
+        val probes = LinkedHashSet<PsiElement>()
+        psiFile.findElementAt(caret)?.let { probes.add(it) }
+        psiFile.findElementAt((caret - 1).coerceAtLeast(0))?.let { probes.add(it) }
+        if (probes.isEmpty()) return null
 
-        var innermost: PsiElement? = null
-        var depth = -1
-        var cur: PsiElement? = leaf
-        while (cur != null && cur !is PsiFile) {
-            val range = cur.textRange
-            if (cur !is PsiWhiteSpace &&
-                range != null &&
-                range.startOffset <= caret && caret <= range.endOffset &&
-                spansMultipleLines(document, range.startOffset, range.endOffset)
-            ) {
-                if (innermost == null) innermost = cur
-                depth++
+        val candidates = LinkedHashSet<PsiElement>()
+        for (probe in probes) {
+            var cur: PsiElement? = probe
+            while (cur != null && cur !is PsiFile) {
+                val range = cur.textRange
+                if (cur !is PsiWhiteSpace &&
+                    range != null &&
+                    range.startOffset <= caret && caret <= range.endOffset &&
+                    spansMultipleLines(document, range.startOffset, range.endOffset) &&
+                    !coversWholeFile(document, range.startOffset, range.endOffset)
+                ) {
+                    candidates.add(cur)
+                }
+                cur = cur.parent
             }
-            cur = cur.parent
         }
 
-        val block = innermost ?: return null
+        val block = candidates.minByOrNull { it.textRange.endOffset - it.textRange.startOffset } ?: return null
         val range = block.textRange
         return Scope(
             range.startOffset,
             range.endOffset,
-            RainbowColorsManager.getIndentColorKey(depth.coerceAtLeast(0))
+            RainbowColorsManager.getIndentColorKey(countMultiLineAncestors(block, document))
         )
+    }
+
+    /** 统计 [element] 到根之间跨多行的祖先数量，用作嵌套深度（决定缩进色档位）。 */
+    private fun countMultiLineAncestors(element: PsiElement, document: Document): Int {
+        var depth = 0
+        var cur: PsiElement? = element.parent
+        while (cur != null && cur !is PsiFile) {
+            val range = cur.textRange
+            if (range != null && spansMultipleLines(document, range.startOffset, range.endOffset)) depth++
+            cur = cur.parent
+        }
+        return depth
+    }
+
+    /** 某范围是否从文件首个文本行延伸到末个文本行（即“占满整篇”）。 */
+    private fun coversWholeFile(document: Document, startOffset: Int, endOffset: Int): Boolean {
+        if (document.textLength == 0) return true
+        val lastLine = document.getLineNumber((document.textLength - 1).coerceAtLeast(0))
+        val startLine = document.getLineNumber(startOffset.coerceIn(0, document.textLength - 1))
+        val endLine = document.getLineNumber((endOffset - 1).coerceIn(0, document.textLength - 1))
+        return startLine == 0 && endLine == lastLine
     }
 
     private fun spansMultipleLines(document: Document, startOffset: Int, endOffset: Int): Boolean {

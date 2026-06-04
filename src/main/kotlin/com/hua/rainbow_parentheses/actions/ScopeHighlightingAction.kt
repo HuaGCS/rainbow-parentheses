@@ -18,7 +18,10 @@ import com.intellij.openapi.util.Key
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.util.concurrency.AppExecutorUtil
 import java.awt.Color
+import java.awt.Point
+import java.awt.event.MouseEvent
 import java.util.concurrent.Callable
+import javax.swing.SwingUtilities
 
 /**
  * 高亮光标所在作用域：
@@ -47,7 +50,8 @@ class ScopeHighlightingAction : AnAction() {
 
         if (!RainbowParenthesesSettings.getInstance().enableScopeHighlighting) return
 
-        val caret = editor.caretModel.offset
+        // 鼠标快捷键（Ctrl+右键）不会移动光标，必须用实际点击位置；否则回退到光标。
+        val caret = offsetAtClickOrCaret(e, editor)
         val document = editor.document
         val textLength = document.textLength
         val modalityState = ModalityState.stateForComponent(editor.component)
@@ -101,6 +105,22 @@ class ScopeHighlightingAction : AnAction() {
     }
 
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
+
+    /**
+     * 鼠标触发时取点击处偏移（右键不移动光标），否则用当前光标偏移。
+     *
+     * [MouseEvent.point] 是相对于事件源组件的，未必是编辑器内容组件；直接喂给
+     * [Editor.xyToLogicalPosition] 会按错误原点解析导致行错位。故经屏幕坐标换算到
+     * 编辑器内容组件（其坐标系即文档坐标，已含滚动），再求逻辑位置。
+     */
+    private fun offsetAtClickOrCaret(e: AnActionEvent, editor: Editor): Int {
+        val mouse = e.inputEvent as? MouseEvent ?: return editor.caretModel.offset
+        val onScreen = runCatching { mouse.locationOnScreen }.getOrNull() ?: return editor.caretModel.offset
+        val point = Point(onScreen)
+        SwingUtilities.convertPointFromScreen(point, editor.contentComponent)
+        val logicalPosition = editor.xyToLogicalPosition(point)
+        return editor.logicalPositionToOffset(logicalPosition)
+    }
 
     private fun clearPreviousHighlight(editor: Editor) {
         val old = editor.getUserData(SCOPE_HIGHLIGHTER_KEY) ?: return

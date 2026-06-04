@@ -49,13 +49,16 @@ class ScopeResolverTest : BasePlatformTestCase() {
         assertFalse("不应一路扩到类体（最内层优先）", text.contains("void m"))
     }
 
-    fun testBraceLessLanguageFallsBackToPsiBlock() {
+    fun testBraceLessLanguageFallsBackToInnermostBlockNotWholeFile() {
         myFixture.configureByText(
             "a.yaml",
             """
-            top:
-              nested:
-                lea<caret>f: 1
+            name: demo
+            server:
+              host: localhost
+              ports:
+                http: 80
+                https: 44<caret>3
             """.trimIndent()
         )
 
@@ -65,10 +68,48 @@ class ScopeResolverTest : BasePlatformTestCase() {
             "PSI 块作用域应使用缩进色，得到 ${scope!!.colorKey.externalName}",
             scope.colorKey.externalName.startsWith("HUA_RAINBOW_INDENT_")
         )
-        assertTrue("作用域应包含光标", scope.startOffset <= myFixture.editor.caretModel.offset)
         val text = textOf(scope)
         assertTrue("作用域应跨多行", text.contains("\n"))
-        assertTrue("作用域应包含光标所在键", text.contains("leaf"))
+        assertTrue("作用域应是最内层 ports 块（含 http/https）", text.contains("http: 80") && text.contains("https"))
+        assertFalse("不应扩到 server 块", text.contains("host: localhost"))
+        assertFalse("绝不应覆盖整篇文件", text.contains("name: demo"))
+    }
+
+    fun testClickAtBlockEndBoundaryWithFollowingSibling() {
+        // 光标落在块最后一行值的末尾，且该块之后还有兄弟块（features:）——偏移正好等于块 endOffset，
+        // findElementAt(caret) 命中的是后面的 features，必须靠 caret-1 探针找回 ports 块（复现实测 bug）
+        myFixture.configureByText(
+            "a.yaml",
+            """
+            name: demo
+            server:
+              host: localhost
+              ports:
+                http: 80
+                https: 443<caret>
+            features:
+              tags: true
+            """.trimIndent()
+        )
+
+        val scope = resolveAtCaret()
+        assertNotNull("块结束边界点击也应解析出所在块", scope)
+        val text = textOf(scope!!)
+        assertTrue("应是 ports 块（含 http/https）", text.contains("http: 80") && text.contains("https"))
+        assertFalse("不应扩到 server 块", text.contains("host: localhost"))
+        assertFalse("不应落到后面的 features 块", text.contains("features"))
+    }
+
+    fun testTopLevelClickDoesNotHighlightWholeFile() {
+        myFixture.configureByText(
+            "a.yaml",
+            """
+            na<caret>me: demo
+            server:
+              host: localhost
+            """.trimIndent()
+        )
+        assertNull("点在顶层项时，唯一包含它的块是整篇文件，应不高亮", resolveAtCaret())
     }
 
     fun testSingleLineHasNoBlockScope() {
