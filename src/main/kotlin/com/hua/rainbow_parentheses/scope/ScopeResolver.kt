@@ -90,13 +90,32 @@ object ScopeResolver {
             }
         }
 
-        val block = candidates.minByOrNull { it.textRange.endOffset - it.textRange.startOffset } ?: return null
-        val range = block.textRange
-        return Scope(
-            range.startOffset,
-            range.endOffset,
-            RainbowColorsManager.getIndentColorKey(countMultiLineAncestors(block, document))
-        )
+        val block = candidates.minByOrNull { it.textRange.endOffset - it.textRange.startOffset }
+        if (block != null) {
+            val range = block.textRange
+            return Scope(
+                range.startOffset,
+                range.endOffset,
+                RainbowColorsManager.getIndentColorKey(countMultiLineAncestors(block, document))
+            )
+        }
+
+        // 回退：没有可用子块（只剩整篇文件）时，高亮光标所在行本身——顶层单行条目也有反应。
+        return lineScope(document, caret, probes)
+    }
+
+    /** 高亮光标所在行的内容（跳过行首缩进）；空行返回 null。 */
+    private fun lineScope(document: Document, caret: Int, probes: Set<PsiElement>): Scope? {
+        if (document.textLength == 0) return null
+        val line = document.getLineNumber(caret.coerceIn(0, document.textLength - 1))
+        val lineEnd = document.getLineEndOffset(line)
+        val chars = document.immutableCharSequence
+        var start = document.getLineStartOffset(line)
+        while (start < lineEnd && chars[start].isWhitespace()) start++
+        if (start >= lineEnd) return null
+
+        val depth = probes.firstOrNull()?.let { countMultiLineAncestors(it, document) } ?: 0
+        return Scope(start, lineEnd, RainbowColorsManager.getIndentColorKey(depth))
     }
 
     /** 统计 [element] 到根之间跨多行的祖先数量，用作嵌套深度（决定缩进色档位）。 */

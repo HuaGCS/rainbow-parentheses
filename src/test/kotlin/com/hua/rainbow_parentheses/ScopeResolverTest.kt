@@ -100,7 +100,7 @@ class ScopeResolverTest : BasePlatformTestCase() {
         assertFalse("不应落到后面的 features 块", text.contains("features"))
     }
 
-    fun testTopLevelClickDoesNotHighlightWholeFile() {
+    fun testTopLevelClickHighlightsItsLineNotWholeFile() {
         myFixture.configureByText(
             "a.yaml",
             """
@@ -109,11 +109,22 @@ class ScopeResolverTest : BasePlatformTestCase() {
               host: localhost
             """.trimIndent()
         )
-        assertNull("点在顶层项时，唯一包含它的块是整篇文件，应不高亮", resolveAtCaret())
+        val scope = resolveAtCaret()
+        assertNotNull("顶层单行条目应回退到高亮该行本身", scope)
+        val text = textOf(scope!!)
+        assertEquals("应恰为该行内容", "name: demo", text)
+        assertFalse("绝不应覆盖整篇文件", text.contains("server"))
     }
 
-    fun testSingleLineHasNoBlockScope() {
+    fun testSingleLineFileHighlightsThatLine() {
         myFixture.configureByText("a.yaml", "k: <caret>1")
-        assertNull("单行无跨行块，应无作用域可高亮", resolveAtCaret())
+        val scope = resolveAtCaret()
+        assertNotNull("单行文件应回退到高亮该行本身", scope)
+        assertEquals("应恰为该行内容", "k: 1", textOf(scope!!))
+    }
+
+    fun testBlankLineHasNoScope() {
+        myFixture.configureByText("a.yaml", "k: 1\n<caret>\nj: 2")
+        assertNull("空行无内容，应不高亮", resolveAtCaret())
     }
 }
